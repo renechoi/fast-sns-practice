@@ -76,3 +76,6 @@ cmake-build-*/
 # Ignore everything but code style settings and run configurations
 .idea/codeStyles/
 .idea/runConfigurations/
+
+**/front-end/node_modules/**
+**/front-end/static/**
