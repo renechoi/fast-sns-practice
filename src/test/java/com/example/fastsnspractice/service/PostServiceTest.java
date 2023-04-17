@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.example.fastsnspractice.exception.ErrorCode;
-import com.example.fastsnspractice.exception.SnsApplicationException;
+import com.example.fastsnspractice.exception.SimpleSnsApplicationException;
 import com.example.fastsnspractice.fixture.TestInfoFixture;
 import com.example.fastsnspractice.fixture.UserEntityFixture;
 import com.example.fastsnspractice.model.entity.PostEntity;
@@ -50,7 +50,8 @@ public class PostServiceTest {
         TestInfoFixture.TestInfo fixture = TestInfoFixture.get();
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.empty());
         when(postEntityRepository.save(any())).thenReturn(mock(PostEntity.class));
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.create(fixture.getUserName(), fixture.getTitle(), fixture.getBody()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.create(fixture.getUserName(), fixture.getTitle(), fixture.getBody()));
 
         Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
@@ -60,7 +61,7 @@ public class PostServiceTest {
     void 포스트_수정시_포스트가_존재하지_않으면_에러를_내뱉는다() {
         TestInfoFixture.TestInfo fixture = TestInfoFixture.get();
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.empty());
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () ->
+        SimpleSnsApplicationException exception = Assertions.assertThrows(SimpleSnsApplicationException.class, () ->
                 postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getBody()));
         Assertions.assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
     }
@@ -72,7 +73,8 @@ public class PostServiceTest {
 
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mock(PostEntity.class)));
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.empty());
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getBody()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getBody()));
         Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
 
@@ -85,7 +87,8 @@ public class PostServiceTest {
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mockPostEntity));
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.of(mockUserEntity));
         when(mockPostEntity.getUser()).thenReturn(mock(UserEntity.class));
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getBody()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getBody()));
         Assertions.assertEquals(ErrorCode.INVALID_PERMISSION, exception.getErrorCode());
     }
 
@@ -93,7 +96,8 @@ public class PostServiceTest {
     void 포스트_삭제시_포스트가_존재하지_않으면_에러를_내뱉는다() {
         TestInfoFixture.TestInfo fixture = TestInfoFixture.get();
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.empty());
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
         Assertions.assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
     }
 
@@ -102,7 +106,8 @@ public class PostServiceTest {
         TestInfoFixture.TestInfo fixture = TestInfoFixture.get();
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mock(PostEntity.class)));
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.empty());
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
         Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
 
@@ -116,7 +121,8 @@ public class PostServiceTest {
         when(postEntityRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mockPostEntity));
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.of(mockUserEntity));
         when(mockPostEntity.getUser()).thenReturn(mock(UserEntity.class));
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.delete(fixture.getUserId(), fixture.getPostId()));
         Assertions.assertEquals(ErrorCode.INVALID_PERMISSION, exception.getErrorCode());
     }
 
@@ -125,7 +131,8 @@ public class PostServiceTest {
     void 내_포스트리스트를_가져올_유저가_존재하지_않으면_에러를_내뱉는다() {
         TestInfoFixture.TestInfo fixture = TestInfoFixture.get();
         when(userEntityRepository.findByUserName(fixture.getUserName())).thenReturn(Optional.empty());
-        SnsApplicationException exception = Assertions.assertThrows(SnsApplicationException.class, () -> postService.my(fixture.getUserId(), mock(Pageable.class)));
+        SimpleSnsApplicationException exception = Assertions.assertThrows(
+            SimpleSnsApplicationException.class, () -> postService.my(fixture.getUserId(), mock(Pageable.class)));
 
         Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }

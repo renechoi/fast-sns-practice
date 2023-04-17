@@ -10,13 +10,17 @@ import java.util.List;
 import java.util.Objects;
 
 import com.example.fastsnspractice.exception.ErrorCode;
-import com.example.fastsnspractice.exception.SnsApplicationException;
+import com.example.fastsnspractice.exception.SimpleSnsApplicationException;
+import com.example.fastsnspractice.model.AlarmArgs;
+import com.example.fastsnspractice.model.AlarmEvent;
+import com.example.fastsnspractice.model.AlarmType;
 import com.example.fastsnspractice.model.Comment;
 import com.example.fastsnspractice.model.Post;
 import com.example.fastsnspractice.model.entity.CommentEntity;
 import com.example.fastsnspractice.model.entity.LikeEntity;
 import com.example.fastsnspractice.model.entity.PostEntity;
 import com.example.fastsnspractice.model.entity.UserEntity;
+import com.example.fastsnspractice.producer.AlarmProducer;
 import com.example.fastsnspractice.repository.CommentEntityRepository;
 import com.example.fastsnspractice.repository.LikeEntityRepository;
 import com.example.fastsnspractice.repository.PostEntityRepository;
@@ -35,7 +39,7 @@ public class PostService {
     @Transactional
     public void create(String userName, String title, String body) {
         UserEntity userEntity = userEntityRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsApplicationException(
+                .orElseThrow(() -> new SimpleSnsApplicationException(
                     ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName)));
         PostEntity postEntity = PostEntity.of(title, body, userEntity);
         postEntityRepository.save(postEntity);
@@ -52,9 +56,9 @@ public class PostService {
 
     @Transactional
     public Post modify(Integer userId, Integer postId, String title, String body) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         if (!Objects.equals(postEntity.getUser().getId(), userId)) {
-            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("user %s has no permission with post %d", userId, postId));
+            throw new SimpleSnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("user %s has no permission with post %d", userId, postId));
         }
 
         postEntity.setTitle(title);
@@ -65,9 +69,9 @@ public class PostService {
 
     @Transactional
     public void delete(Integer userId, Integer postId) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         if (!Objects.equals(postEntity.getUser().getId(), userId)) {
-            throw new SnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("user %s has no permission with post %d", userId, postId));
+            throw new SimpleSnsApplicationException(ErrorCode.INVALID_PERMISSION, String.format("user %s has no permission with post %d", userId, postId));
         }
         likeEntityRepository.deleteAllByPost(postEntity);
         commentEntityRepository.deleteAllByPost(postEntity);
@@ -76,9 +80,9 @@ public class PostService {
 
     @Transactional
     public void comment(Integer postId, String userName, String comment) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         UserEntity userEntity = userEntityRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName)));
+                .orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName)));
 
         commentEntityRepository.save(CommentEntity.of(comment, postEntity, userEntity));
 
@@ -88,18 +92,18 @@ public class PostService {
     }
 
     public Page<Comment> getComments(Integer postId, Pageable pageable) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         return commentEntityRepository.findAllByPost(postEntity, pageable).map(Comment::fromEntity);
     }
 
     @Transactional
     public void like(Integer postId, String userName) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         UserEntity userEntity = userEntityRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName)));
+                .orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName)));
 
         likeEntityRepository.findByUserAndPost(userEntity, postEntity).ifPresent(it -> {
-            throw new SnsApplicationException(ErrorCode.ALREADY_LIKED_POST, String.format("userName %s already like the post %s", userName, postId));
+            throw new SimpleSnsApplicationException(ErrorCode.ALREADY_LIKED_POST, String.format("userName %s already like the post %s", userName, postId));
         });
 
         likeEntityRepository.save(LikeEntity.of(postEntity, userEntity));
@@ -110,7 +114,7 @@ public class PostService {
     }
 
     public Integer getLikeCount(Integer postId) {
-        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() -> new SimpleSnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         List<LikeEntity> likes = likeEntityRepository.findAllByPost(postEntity);
         return likes.size();
     }

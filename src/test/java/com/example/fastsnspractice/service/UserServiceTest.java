@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.example.fastsnspractice.repository.UserEntityRepository;
-import com.example.fastsnspractice.exception.SnsApplicationException;
+import com.example.fastsnspractice.exception.SimpleSnsApplicationException;
 import com.example.fastsnspractice.fixture.UserEntityFixture;
 import com.example.fastsnspractice.model.entity.UserEntity;
 
@@ -55,7 +55,7 @@ public class UserServiceTest {
 		when(userEntityRepository.save(any())).thenReturn(Optional.of(UserEntityFixture.get(userName, password)));
 
 		// then
-		Assertions.assertThrows(SnsApplicationException.class, ()->userService.join(userName,password));
+		Assertions.assertThrows(SimpleSnsApplicationException.class, ()->userService.join(userName,password));
 	}
 
 
@@ -89,7 +89,7 @@ public class UserServiceTest {
 		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
 		// then
-		Assertions.assertThrows(SnsApplicationException.class, ()->userService.login(userName,password));
+		Assertions.assertThrows(SimpleSnsApplicationException.class, ()->userService.login(userName,password));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class UserServiceTest {
 		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
 
 		// then
-		Assertions.assertThrows(SnsApplicationException.class, ()->userService.login(userName,password));
+		Assertions.assertThrows(SimpleSnsApplicationException.class, ()->userService.login(userName,password));
 	}
 
 }
