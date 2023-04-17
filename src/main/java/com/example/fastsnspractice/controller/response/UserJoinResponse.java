@@ -1,7 +1,6 @@
 package com.example.fastsnspractice.controller.response;
 
-import com.example.fastsnspractice.model.User;
-
+import com.fast.campus.simplesns.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,14 +8,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public
 class UserJoinResponse {
-	private Integer id;
-	private String name;
+    private Integer id;
+    private String name;
 
-	public static UserJoinResponse fromUser(User user) {
-		return new UserJoinResponse(
-			user.getId(),
-			user.getUsername()
-		);
-	}
+    public static UserJoinResponse fromUser(User user) {
+        return new UserJoinResponse(
+                user.getId(),
+                user.getUsername()
+        );
+    }
 
 }

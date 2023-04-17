@@ -34,12 +34,12 @@ public class UserService {
 	private Long expiredTimeMs;
 
 
-	// public User loadUserByUsername(String userName) throws UsernameNotFoundException {
-	// 	return redisRepository.getUser(userName).orElseGet(
-	// 		() -> userRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(
-	// 			() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName))
-	// 		));
-	// }
+	public User loadUserByUsername(String userName) throws UsernameNotFoundException {
+		return redisRepository.getUser(userName).orElseGet(
+			() -> userRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(
+				() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", userName))
+			));
+	}
 
 	public String login(String userName, String password) {
 		UserEntity savedUser = userRepository.findByUserName(userName)
