@@ -14,8 +14,8 @@ import com.example.fastsnspractice.controller.response.Response;
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
-    @ExceptionHandler(SnsApplicationException.class)
-    public ResponseEntity<?> errorHandler(SnsApplicationException e) {
+    @ExceptionHandler(SimpleSnsApplicationException.class)
+    public ResponseEntity<?> errorHandler(SimpleSnsApplicationException e) {
         log.error("Error occurs {}", e.toString());
         return ResponseEntity.status(e.getErrorCode().getStatus())
                 .body(Response.error(e.getErrorCode().name()));
