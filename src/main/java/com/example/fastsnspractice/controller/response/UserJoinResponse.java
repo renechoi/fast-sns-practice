@@ -1,6 +1,7 @@
 package com.example.fastsnspractice.controller.response;
 
-import com.fast.campus.simplesns.model.User;
+import com.example.fastsnspractice.model.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
