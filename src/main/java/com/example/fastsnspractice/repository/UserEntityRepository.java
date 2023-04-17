@@ -1,4 +1,4 @@
-package com.example.fastsnspractice.controller.repository;
+package com.example.fastsnspractice.repository;
 
 import java.util.Optional;
 

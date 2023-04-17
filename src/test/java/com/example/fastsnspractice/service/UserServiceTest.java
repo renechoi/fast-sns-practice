@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.example.fastsnspractice.controller.repository.UserEntityRepository;
+import com.example.fastsnspractice.repository.UserEntityRepository;
 import com.example.fastsnspractice.exception.SnsApplicationException;
 import com.example.fastsnspractice.fixture.UserEntityFixture;
 import com.example.fastsnspractice.model.entity.UserEntity;
